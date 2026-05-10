@@ -1,80 +1,745 @@
-
-<h2 class="sr-only">DSA Pattern Practice Sheet — interactive problem tracker organized by data structure and pattern</h2>
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DSA Practice Sheet — Pattern Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Syne:wght@400;500;600;700;800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--font-sans)}
-.top-bar{padding:1.25rem 0 1rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
-.top-bar h1{font-size:20px;font-weight:500;color:var(--color-text-primary)}
-.top-bar p{font-size:13px;color:var(--color-text-secondary);margin-top:2px}
-.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.25rem}
-.stat-card{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:.75rem 1rem}
-.stat-card .lbl{font-size:12px;color:var(--color-text-secondary);margin-bottom:4px}
-.stat-card .val{font-size:20px;font-weight:500;color:var(--color-text-primary)}
-.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.25rem;align-items:center}
-.filters select,.filters input{height:34px;font-size:13px;padding:0 10px;border-radius:var(--border-radius-md)}
-.filters input{flex:1;min-width:160px}
-.ds-section{margin-bottom:1.5rem;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden}
-.ds-header{display:flex;align-items:center;gap:10px;padding:.75rem 1rem;cursor:pointer;background:var(--color-background-secondary);user-select:none}
-.ds-header:hover{background:var(--color-background-tertiary)}
-.ds-icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
-.ds-title{font-size:14px;font-weight:500;color:var(--color-text-primary);flex:1}
-.ds-meta{display:flex;align-items:center;gap:8px}
-.ds-progress{font-size:12px;color:var(--color-text-secondary)}
-.progress-bar{width:80px;height:4px;background:var(--color-border-tertiary);border-radius:2px;overflow:hidden}
-.progress-fill{height:100%;border-radius:2px;transition:width .3s}
-.chevron{font-size:14px;color:var(--color-text-tertiary);transition:transform .2s}
-.chevron.open{transform:rotate(180deg)}
-.pattern-group{padding:.5rem 1rem 0}
-.pattern-label{font-size:11px;font-weight:500;letter-spacing:.04em;color:var(--color-text-tertiary);text-transform:uppercase;padding:.6rem 0 .3rem;border-top:0.5px solid var(--color-border-tertiary);margin-top:.25rem}
-.pattern-label:first-child{border-top:none}
-.problem-row{display:grid;grid-template-columns:26px 1fr 80px 72px 72px;align-items:center;gap:8px;padding:5px 0;border-radius:6px}
-.problem-row:hover{background:var(--color-background-secondary)}
-.chk{width:16px;height:16px;accent-color:#5DCAA5;cursor:pointer;flex-shrink:0;justify-self:center}
-.p-name{font-size:13px;color:var(--color-text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.diff-badge{font-size:11px;padding:2px 7px;border-radius:4px;font-weight:500;text-align:center}
-.easy{background:#EAF3DE;color:#3B6D11}.medium{background:#FAEEDA;color:#854F0B}.hard{background:#FCEBEB;color:#A32D2D}
-@media (prefers-color-scheme:dark){
-  .easy{background:#27500A;color:#C0DD97}.medium{background:#633806;color:#FAC775}.hard{background:#791F1F;color:#F7C1C1}
+:root {
+  --bg:       #0a0b0e;
+  --bg2:      #111318;
+  --bg3:      #181b22;
+  --bg4:      #1e2129;
+  --border:   rgba(255,255,255,0.07);
+  --border2:  rgba(255,255,255,0.13);
+  --text:     #e8eaf0;
+  --text2:    #8b91a1;
+  --text3:    #555c6e;
+  --accent:   #00e5a0;
+  --accent2:  #00b880;
+  --accent-bg:rgba(0,229,160,0.08);
+  --amber:    #f5a623;
+  --amber-bg: rgba(245,166,35,0.1);
+  --red:      #ff5f5f;
+  --red-bg:   rgba(255,95,95,0.1);
+  --blue:     #5b9cf6;
+  --blue-bg:  rgba(91,156,246,0.1);
+  --purple:   #a78bfa;
+  --purple-bg:rgba(167,139,250,0.1);
+  --pink:     #f472b6;
+  --pink-bg:  rgba(244,114,182,0.1);
+  --coral:    #fb7185;
+  --teal:     #2dd4bf;
+  --teal-bg:  rgba(45,212,191,0.1);
+  --font-head: 'Syne', sans-serif;
+  --font-body: 'Instrument Sans', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+  --radius:   10px;
+  --radius-lg:16px;
 }
-.tag{font-size:11px;color:var(--color-text-secondary);border:0.5px solid var(--color-border-tertiary);padding:2px 6px;border-radius:4px;text-align:center}
-.lc-link{font-size:11px;color:var(--color-text-info);text-decoration:none;cursor:pointer;text-align:center}
-.lc-link:hover{text-decoration:underline}
-.col-head{display:grid;grid-template-columns:26px 1fr 80px 72px 72px;gap:8px;padding:4px 0 2px;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:2px}
-.col-head span{font-size:11px;color:var(--color-text-tertiary);font-weight:500}
-.col-head span:nth-child(1){text-align:center}
-.col-head span:nth-child(3),.col-head span:nth-child(4),.col-head span:nth-child(5){text-align:center}
-.pb-wrap{padding-bottom:.75rem}
-.empty{padding:1.5rem;text-align:center;font-size:13px;color:var(--color-text-tertiary)}
-.reset-btn{font-size:12px;padding:4px 10px;border-radius:var(--border-radius-md);cursor:pointer;background:transparent;border:0.5px solid var(--color-border-secondary);color:var(--color-text-secondary)}
-.reset-btn:hover{background:var(--color-background-secondary)}
+[data-theme="light"] {
+  --bg:       #f4f5f7;
+  --bg2:      #ffffff;
+  --bg3:      #eef0f4;
+  --bg4:      #e4e7ed;
+  --border:   rgba(0,0,0,0.08);
+  --border2:  rgba(0,0,0,0.14);
+  --text:     #111318;
+  --text2:    #555c6e;
+  --text3:    #8b91a1;
+  --accent-bg:rgba(0,180,124,0.08);
+  --amber-bg: rgba(200,120,0,0.08);
+  --red-bg:   rgba(200,0,0,0.07);
+  --blue-bg:  rgba(30,90,200,0.07);
+  --purple-bg:rgba(100,60,200,0.07);
+  --pink-bg:  rgba(200,50,120,0.07);
+  --teal-bg:  rgba(0,130,120,0.07);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ── GRID LINES BACKGROUND ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.page-wrap {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+}
+
+/* ── HEADER ── */
+header {
+  padding: 40px 0 32px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 32px;
+}
+
+.header-left {}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.eyebrow::before {
+  content: '';
+  width: 20px;
+  height: 1px;
+  background: var(--accent);
+  display: inline-block;
+}
+
+h1 {
+  font-family: var(--font-head);
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 800;
+  letter-spacing: -.02em;
+  line-height: 1.1;
+  color: var(--text);
+}
+
+h1 span {
+  color: var(--accent);
+}
+
+.subtitle {
+  font-size: 14px;
+  color: var(--text2);
+  margin-top: 10px;
+  font-family: var(--font-body);
+  max-width: 480px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 8px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: var(--radius);
+  font-size: 12px;
+  font-family: var(--font-body);
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid var(--border2);
+  background: var(--bg3);
+  color: var(--text2);
+  transition: all .15s;
+  text-decoration: none;
+}
+.btn:hover { background: var(--bg4); color: var(--text); border-color: var(--border2); }
+.btn i { font-size: 14px; }
+
+.btn-theme { }
+
+.btn-reset {
+  color: var(--red);
+  border-color: rgba(255,95,95,0.2);
+  background: rgba(255,95,95,0.05);
+}
+.btn-reset:hover { background: rgba(255,95,95,0.12); color: var(--red); }
+
+/* ── STATS ROW ── */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 28px;
+}
+@media (max-width: 640px) { .stats-row { grid-template-columns: repeat(2, 1fr); } }
+
+.stat-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color .2s;
+}
+.stat-card:hover { border-color: var(--border2); }
+
+.stat-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+}
+.stat-card:nth-child(1)::after { background: var(--text3); }
+.stat-card:nth-child(2)::after { background: var(--accent); }
+.stat-card:nth-child(3)::after { background: var(--amber); }
+.stat-card:nth-child(4)::after { background: var(--blue); }
+
+.stat-label {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 8px;
+}
+.stat-value {
+  font-family: var(--font-head);
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--text);
+}
+.stat-card:nth-child(2) .stat-value { color: var(--accent); }
+.stat-card:nth-child(3) .stat-value { color: var(--amber); }
+.stat-card:nth-child(4) .stat-value { color: var(--blue); }
+
+/* ── MASTER PROGRESS BAR ── */
+.master-progress {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.mp-label { font-size: 12px; color: var(--text2); white-space: nowrap; font-family: var(--font-mono); }
+.mp-bar-wrap { flex: 1; height: 6px; background: var(--bg4); border-radius: 3px; overflow: hidden; }
+.mp-bar-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--accent2), var(--accent)); transition: width .4s ease; }
+.mp-pct { font-size: 13px; font-weight: 600; color: var(--accent); font-family: var(--font-mono); min-width: 36px; text-align: right; }
+
+/* ── FILTERS ── */
+.filters {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+  align-items: center;
+}
+
+.search-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 200px;
+}
+.search-wrap i {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 15px;
+  color: var(--text3);
+  pointer-events: none;
+}
+.search-wrap input {
+  width: 100%;
+  height: 38px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 13px;
+  padding: 0 12px 0 38px;
+  outline: none;
+  transition: border-color .15s;
+}
+.search-wrap input:focus { border-color: var(--accent); }
+.search-wrap input::placeholder { color: var(--text3); }
+
+.filter-select {
+  height: 38px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text2);
+  font-family: var(--font-body);
+  font-size: 13px;
+  padding: 0 12px;
+  outline: none;
+  cursor: pointer;
+  transition: border-color .15s;
+  appearance: none;
+  padding-right: 32px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23555c6e' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+}
+.filter-select:focus { border-color: var(--accent); }
+
+.filter-chip {
+  height: 38px;
+  padding: 0 14px;
+  border-radius: var(--radius);
+  font-size: 12px;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  color: var(--text3);
+  transition: all .15s;
+  letter-spacing: .04em;
+  white-space: nowrap;
+}
+.filter-chip.active {
+  background: var(--accent-bg);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.filter-chip:hover:not(.active) { border-color: var(--border2); color: var(--text2); }
+
+/* ── DS SECTION ── */
+.ds-section {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  margin-bottom: 12px;
+  overflow: hidden;
+  transition: border-color .2s;
+}
+.ds-section:hover { border-color: var(--border2); }
+
+.ds-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  cursor: pointer;
+  user-select: none;
+  transition: background .15s;
+}
+.ds-header:hover { background: var(--bg3); }
+
+.ds-icon-wrap {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+
+.ds-title {
+  font-family: var(--font-head);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  flex: 1;
+}
+
+.ds-header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ds-count {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--text3);
+}
+
+.ds-bar-wrap {
+  width: 72px;
+  height: 4px;
+  background: var(--bg4);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.ds-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width .3s;
+}
+
+.ds-pct {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--accent);
+  min-width: 32px;
+  text-align: right;
+}
+
+.chevron-icon {
+  font-size: 14px;
+  color: var(--text3);
+  transition: transform .2s;
+  flex-shrink: 0;
+}
+.chevron-icon.open { transform: rotate(180deg); }
+
+/* ── PATTERN BODY ── */
+.ds-body { border-top: 1px solid var(--border); }
+
+.pattern-group { padding: 0 18px; }
+
+.pattern-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 0 6px;
+  border-bottom: 1px solid var(--border);
+}
+
+.pattern-name {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text3);
+}
+
+.pattern-count {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  color: var(--text3);
+  margin-left: auto;
+}
+
+/* ── COL HEADERS ── */
+.col-head {
+  display: grid;
+  grid-template-columns: 28px 1fr 90px 78px 70px;
+  gap: 8px;
+  padding: 6px 0 4px;
+  align-items: center;
+}
+.col-head span {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text3);
+}
+.col-head span:nth-child(3),
+.col-head span:nth-child(4),
+.col-head span:nth-child(5) { text-align: center; }
+
+/* ── PROBLEM ROW ── */
+.problem-row {
+  display: grid;
+  grid-template-columns: 28px 1fr 90px 78px 70px;
+  gap: 8px;
+  padding: 5px 0;
+  align-items: center;
+  border-radius: 6px;
+  transition: background .12s;
+}
+.problem-row:hover { background: var(--bg3); }
+.problem-row:hover .p-name { color: var(--text); }
+
+.chk-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chk {
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+  accent-color: var(--accent);
+  flex-shrink: 0;
+}
+
+.p-name {
+  font-size: 13px;
+  color: var(--text2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color .12s;
+  font-family: var(--font-body);
+}
+.p-name.solved {
+  text-decoration: line-through;
+  color: var(--text3);
+}
+
+.tag-pill {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  color: var(--text3);
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  padding: 2px 7px;
+  border-radius: 4px;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.diff-badge {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-align: center;
+  letter-spacing: .04em;
+}
+.diff-easy   { background: rgba(0,229,160,0.1);  color: var(--accent); }
+.diff-medium { background: var(--amber-bg);       color: var(--amber); }
+.diff-hard   { background: var(--red-bg);         color: var(--red); }
+
+.lc-link {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--blue);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  transition: color .12s;
+}
+.lc-link:hover { color: #7ab3ff; text-decoration: underline; }
+.lc-link i { font-size: 10px; }
+
+.pb-section-wrap { padding-bottom: 10px; }
+
+/* ── EMPTY STATE ── */
+.empty-state {
+  padding: 48px;
+  text-align: center;
+}
+.empty-state i {
+  font-size: 32px;
+  color: var(--text3);
+  margin-bottom: 12px;
+  display: block;
+}
+.empty-state p {
+  font-size: 13px;
+  color: var(--text3);
+  font-family: var(--font-mono);
+}
+
+/* ── DS COLORS ── */
+.color-teal   { background: var(--teal-bg);   color: var(--teal); }
+.color-purple { background: var(--purple-bg); color: var(--purple); }
+.color-coral  { background: rgba(251,113,133,0.1); color: var(--coral); }
+.color-blue   { background: var(--blue-bg);   color: var(--blue); }
+.color-amber  { background: var(--amber-bg);  color: var(--amber); }
+.color-pink   { background: var(--pink-bg);   color: var(--pink); }
+.color-green  { background: rgba(74,222,128,0.1); color: #4ade80; }
+.color-gray   { background: rgba(148,163,184,0.1); color: #94a3b8; }
+
+.bar-teal   { background: var(--teal); }
+.bar-purple { background: var(--purple); }
+.bar-coral  { background: var(--coral); }
+.bar-blue   { background: var(--blue); }
+.bar-amber  { background: var(--amber); }
+.bar-pink   { background: var(--pink); }
+.bar-green  { background: #4ade80; }
+.bar-gray   { background: #94a3b8; }
+
+/* ── FOOTER ── */
+footer {
+  text-align: center;
+  padding: 32px 0 0;
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--text3);
+  letter-spacing: .06em;
+  border-top: 1px solid var(--border);
+  margin-top: 48px;
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.ds-section { animation: fadeUp .3s ease both; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 680px) {
+  .col-head,
+  .problem-row { grid-template-columns: 28px 1fr 60px 60px; }
+  .col-head span:nth-child(3),
+  .tag-pill { display: none; }
+  .ds-bar-wrap { display: none; }
+}
+@media (max-width: 480px) {
+  h1 { font-size: 26px; }
+  .stats-row { grid-template-columns: 1fr 1fr; }
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--border2); }
+
+/* ── TOOLTIP for solved checkmark ── */
+.chk:checked + .p-name { }
+
+/* ── TAG FILTER ROW ── */
+.ds-filter-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+  align-items: center;
+}
+.ds-filter-label {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--text3);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin-right: 4px;
+}
+.ds-chip {
+  height: 26px;
+  padding: 0 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-family: var(--font-mono);
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text3);
+  transition: all .13s;
+  letter-spacing: .03em;
+}
+.ds-chip:hover { border-color: var(--border2); color: var(--text2); }
+.ds-chip.active {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-bg);
+}
 </style>
+</head>
+<body>
 
-<div class="top-bar">
-  <div>
-    <h1>DSA practice sheet</h1>
-    <p>Track your progress by pattern across every data structure</p>
+<div class="page-wrap">
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-left">
+      <div class="eyebrow">Pattern Recognition Tracker</div>
+      <h1>DSA <span>Practice</span> Sheet</h1>
+      <p class="subtitle">150+ curated problems organized by data structure and pattern. Track what you've solved.</p>
+    </div>
+    <div class="header-right">
+      <button class="btn btn-theme" onclick="toggleTheme()" title="Toggle theme">
+        <i class="ti ti-sun" id="theme-icon"></i>
+      </button>
+      <button class="btn btn-reset" onclick="resetAll()">
+        <i class="ti ti-rotate"></i> Reset
+      </button>
+    </div>
+  </header>
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-label">Total</div>
+      <div class="stat-value" id="st-total">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Solved</div>
+      <div class="stat-value" id="st-solved">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Remaining</div>
+      <div class="stat-value" id="st-rem">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Completion</div>
+      <div class="stat-value" id="st-pct">0%</div>
+    </div>
   </div>
-  <button class="reset-btn" onclick="resetAll()">Reset progress</button>
-</div>
 
-<div class="stats-row">
-  <div class="stat-card"><div class="lbl">Total problems</div><div class="val" id="st-total">0</div></div>
-  <div class="stat-card"><div class="lbl">Solved</div><div class="val" id="st-solved" style="color:#1D9E75">0</div></div>
-  <div class="stat-card"><div class="lbl">Remaining</div><div class="val" id="st-rem">0</div></div>
-  <div class="stat-card"><div class="lbl">Completion</div><div class="val" id="st-pct">0%</div></div>
-</div>
+  <!-- MASTER PROGRESS BAR -->
+  <div class="master-progress">
+    <span class="mp-label">Overall progress</span>
+    <div class="mp-bar-wrap"><div class="mp-bar-fill" id="mp-fill" style="width:0%"></div></div>
+    <span class="mp-pct" id="mp-pct-label">0%</span>
+  </div>
 
-<div class="filters">
-  <input type="text" id="search" placeholder="Search problems..." oninput="render()">
-  <select id="fDiff" onchange="render()"><option value="">All difficulties</option><option>Easy</option><option>Medium</option><option>Hard</option></select>
-  <select id="fStatus" onchange="render()"><option value="">All status</option><option value="done">Solved</option><option value="todo">Unsolved</option></select>
-</div>
+  <!-- FILTERS -->
+  <div class="filters">
+    <div class="search-wrap">
+      <i class="ti ti-search"></i>
+      <input type="text" id="search" placeholder="Search problems or patterns..." oninput="render()">
+    </div>
+    <select class="filter-select" id="fDiff" onchange="render()">
+      <option value="">All difficulties</option>
+      <option>Easy</option>
+      <option>Medium</option>
+      <option>Hard</option>
+    </select>
+    <select class="filter-select" id="fStatus" onchange="render()">
+      <option value="">All status</option>
+      <option value="done">Solved</option>
+      <option value="todo">Unsolved</option>
+    </select>
+  </div>
 
-<div id="board"></div>
+  <!-- DS FILTER CHIPS -->
+  <div class="ds-filter-row" id="ds-chips">
+    <span class="ds-filter-label">Filter:</span>
+  </div>
+
+  <!-- BOARD -->
+  <div id="board"></div>
+
+  <footer>Built for engineers who take patterns seriously &nbsp;·&nbsp; Progress saved in your browser</footer>
+
+</div>
 
 <script>
 const DATA = [
-  {ds:"Arrays",color:"c-teal",icon:"ti-layout-grid",patterns:[
+  {ds:"Arrays",col:"teal",icon:"ti-layout-grid",patterns:[
     {name:"Prefix Sum",problems:[
       {id:"p1",name:"Subarray Sum Equals K",diff:"Medium",tag:"Prefix+Hash",lc:"560"},
       {id:"p2",name:"Range Sum Query",diff:"Easy",tag:"Prefix",lc:"303"},
@@ -84,7 +749,7 @@ const DATA = [
     ]},
     {name:"Sliding Window",problems:[
       {id:"p6",name:"Maximum Average Subarray I",diff:"Easy",tag:"Fixed Window",lc:"643"},
-      {id:"p7",name:"Longest Subarray with Sum ≤ K",diff:"Medium",tag:"Variable Window",lc:"2401"},
+      {id:"p7",name:"Longest Subarray with Sum <= K",diff:"Medium",tag:"Variable Window",lc:"2401"},
       {id:"p8",name:"Maximum Points from Cards",diff:"Medium",tag:"Fixed Window",lc:"1423"},
       {id:"p9",name:"Minimum Size Subarray Sum",diff:"Medium",tag:"Variable Window",lc:"209"},
     ]},
@@ -100,7 +765,7 @@ const DATA = [
       {id:"p16",name:"Trapping Rain Water",diff:"Hard",tag:"Two Pointers",lc:"42"},
       {id:"p17",name:"4Sum",diff:"Medium",tag:"Sort + 2P",lc:"18"},
     ]},
-    {name:"Dutch National Flag / Partition",problems:[
+    {name:"Dutch National Flag",problems:[
       {id:"p18",name:"Sort Colors",diff:"Medium",tag:"3-Way Partition",lc:"75"},
       {id:"p19",name:"Move Zeroes",diff:"Easy",tag:"Two Pointers",lc:"283"},
       {id:"p20",name:"Partition Array by Parity",diff:"Easy",tag:"Two Pointers",lc:"905"},
@@ -112,7 +777,7 @@ const DATA = [
       {id:"p24",name:"Meeting Rooms II",diff:"Medium",tag:"Heap / Sweep",lc:"253"},
     ]},
   ]},
-  {ds:"Strings",color:"c-purple",icon:"ti-letter-case",patterns:[
+  {ds:"Strings",col:"purple",icon:"ti-letter-case",patterns:[
     {name:"Frequency Counting",problems:[
       {id:"s1",name:"Valid Anagram",diff:"Easy",tag:"Freq Array",lc:"242"},
       {id:"s2",name:"Group Anagrams",diff:"Medium",tag:"Sort Key",lc:"49"},
@@ -138,7 +803,7 @@ const DATA = [
       {id:"s16",name:"Shortest Palindrome",diff:"Hard",tag:"KMP",lc:"214"},
     ]},
   ]},
-  {ds:"Hashing",color:"c-coral",icon:"ti-hash",patterns:[
+  {ds:"Hashing",col:"coral",icon:"ti-hash",patterns:[
     {name:"HashMap Lookup",problems:[
       {id:"h1",name:"Two Sum",diff:"Easy",tag:"HashMap",lc:"1"},
       {id:"h2",name:"Isomorphic Strings",diff:"Easy",tag:"Dual Map",lc:"205"},
@@ -157,7 +822,7 @@ const DATA = [
       {id:"h11",name:"Intersection of Two Arrays",diff:"Easy",tag:"HashSet",lc:"349"},
     ]},
   ]},
-  {ds:"Linked List",color:"c-blue",icon:"ti-link",patterns:[
+  {ds:"Linked List",col:"blue",icon:"ti-link",patterns:[
     {name:"Fast & Slow Pointers",problems:[
       {id:"ll1",name:"Linked List Cycle",diff:"Easy",tag:"Floyd's",lc:"141"},
       {id:"ll2",name:"Linked List Cycle II",diff:"Medium",tag:"Floyd's",lc:"142"},
@@ -180,7 +845,7 @@ const DATA = [
       {id:"ll13",name:"LFU Cache",diff:"Hard",tag:"HashMap+DLL",lc:"460"},
     ]},
   ]},
-  {ds:"Stack",color:"c-amber",icon:"ti-stack-2",patterns:[
+  {ds:"Stack",col:"amber",icon:"ti-stack-2",patterns:[
     {name:"Monotonic Stack",problems:[
       {id:"st1",name:"Next Greater Element I",diff:"Easy",tag:"Mono Stack",lc:"496"},
       {id:"st2",name:"Next Greater Element II",diff:"Medium",tag:"Circular Mono",lc:"503"},
@@ -200,7 +865,7 @@ const DATA = [
       {id:"st12",name:"Decode String",diff:"Medium",tag:"Stack",lc:"394"},
     ]},
   ]},
-  {ds:"Queue & Deque",color:"c-pink",icon:"ti-arrows-right-left",patterns:[
+  {ds:"Queue & Deque",col:"pink",icon:"ti-arrows-right-left",patterns:[
     {name:"BFS",problems:[
       {id:"q1",name:"Binary Tree Level Order Traversal",diff:"Medium",tag:"BFS",lc:"102"},
       {id:"q2",name:"Rotting Oranges",diff:"Medium",tag:"Multi-source BFS",lc:"994"},
@@ -210,10 +875,10 @@ const DATA = [
     {name:"Monotonic Deque",problems:[
       {id:"q5",name:"Sliding Window Maximum",diff:"Hard",tag:"Mono Deque",lc:"239"},
       {id:"q6",name:"Jump Game VI",diff:"Medium",tag:"Deque+DP",lc:"1696"},
-      {id:"q7",name:"Shortest Subarray with Sum ≥ K",diff:"Hard",tag:"Mono Deque",lc:"862"},
+      {id:"q7",name:"Shortest Subarray with Sum >= K",diff:"Hard",tag:"Mono Deque",lc:"862"},
     ]},
   ]},
-  {ds:"Binary Search",color:"c-green",icon:"ti-arrows-split",patterns:[
+  {ds:"Binary Search",col:"green",icon:"ti-arrows-split",patterns:[
     {name:"Classic Search",problems:[
       {id:"bs1",name:"Binary Search",diff:"Easy",tag:"Standard",lc:"704"},
       {id:"bs2",name:"Search Insert Position",diff:"Easy",tag:"Lower Bound",lc:"35"},
@@ -233,7 +898,7 @@ const DATA = [
       {id:"bs12",name:"Median of Two Sorted Arrays",diff:"Hard",tag:"BS on Partition",lc:"4"},
     ]},
   ]},
-  {ds:"Recursion & Backtracking",color:"c-coral",icon:"ti-refresh",patterns:[
+  {ds:"Backtracking",col:"coral",icon:"ti-refresh",patterns:[
     {name:"Subsets",problems:[
       {id:"bt1",name:"Subsets",diff:"Medium",tag:"Backtrack",lc:"78"},
       {id:"bt2",name:"Subsets II (Duplicates)",diff:"Medium",tag:"Backtrack+Prune",lc:"90"},
@@ -248,14 +913,14 @@ const DATA = [
       {id:"bt7",name:"Combination Sum II",diff:"Medium",tag:"Backtrack+Prune",lc:"40"},
       {id:"bt8",name:"Combinations",diff:"Medium",tag:"Backtrack",lc:"77"},
     ]},
-    {name:"Grid / Decision Problems",problems:[
+    {name:"Grid / Constraint",problems:[
       {id:"bt9",name:"N-Queens",diff:"Hard",tag:"Constraint Bt",lc:"51"},
       {id:"bt10",name:"Sudoku Solver",diff:"Hard",tag:"Constraint Bt",lc:"37"},
       {id:"bt11",name:"Word Search",diff:"Medium",tag:"DFS+Backtrack",lc:"79"},
       {id:"bt12",name:"Letter Combinations of Phone",diff:"Medium",tag:"Backtrack",lc:"17"},
     ]},
   ]},
-  {ds:"Trees",color:"c-teal",icon:"ti-binary-tree",patterns:[
+  {ds:"Trees",col:"teal",icon:"ti-binary-tree",patterns:[
     {name:"DFS",problems:[
       {id:"tr1",name:"Invert Binary Tree",diff:"Easy",tag:"DFS",lc:"226"},
       {id:"tr2",name:"Diameter of Binary Tree",diff:"Easy",tag:"DFS+PostOrder",lc:"543"},
@@ -281,12 +946,12 @@ const DATA = [
       {id:"tr14",name:"Distribute Coins in Binary Tree",diff:"Medium",tag:"Tree DP",lc:"979"},
     ]},
   ]},
-  {ds:"BST",color:"c-purple",icon:"ti-binary-tree-2",patterns:[
+  {ds:"BST",col:"purple",icon:"ti-binary-tree-2",patterns:[
     {name:"Validation & Properties",problems:[
       {id:"bst1",name:"Validate Binary Search Tree",diff:"Medium",tag:"DFS+Bounds",lc:"98"},
       {id:"bst2",name:"Recover BST (Two Swapped Nodes)",diff:"Medium",tag:"Inorder",lc:"99"},
     ]},
-    {name:"BST Search & Operations",problems:[
+    {name:"BST Operations",problems:[
       {id:"bst3",name:"Kth Smallest in BST",diff:"Medium",tag:"Inorder",lc:"230"},
       {id:"bst4",name:"Insert into BST",diff:"Medium",tag:"BST Insert",lc:"701"},
       {id:"bst5",name:"Delete Node in BST",diff:"Medium",tag:"BST Delete",lc:"450"},
@@ -298,7 +963,7 @@ const DATA = [
       {id:"bst9",name:"BST Iterator",diff:"Medium",tag:"Inorder+Stack",lc:"173"},
     ]},
   ]},
-  {ds:"Heap / Priority Queue",color:"c-amber",icon:"ti-pyramid",patterns:[
+  {ds:"Heap",col:"amber",icon:"ti-pyramid",patterns:[
     {name:"Top K Problems",problems:[
       {id:"hp1",name:"Top K Frequent Elements",diff:"Medium",tag:"MinHeap K",lc:"347"},
       {id:"hp2",name:"K Closest Points to Origin",diff:"Medium",tag:"MinHeap K",lc:"973"},
@@ -319,7 +984,7 @@ const DATA = [
       {id:"hp11",name:"Meeting Rooms II",diff:"Medium",tag:"MinHeap",lc:"253"},
     ]},
   ]},
-  {ds:"Greedy",color:"c-green",icon:"ti-bolt",patterns:[
+  {ds:"Greedy",col:"green",icon:"ti-bolt",patterns:[
     {name:"Interval Scheduling",problems:[
       {id:"gr1",name:"Non-overlapping Intervals",diff:"Medium",tag:"Sort+Greedy",lc:"435"},
       {id:"gr2",name:"Minimum Number of Arrows",diff:"Medium",tag:"Sort+Greedy",lc:"452"},
@@ -335,7 +1000,7 @@ const DATA = [
       {id:"gr8",name:"Partition Labels",diff:"Medium",tag:"Greedy",lc:"763"},
     ]},
   ]},
-  {ds:"Graphs",color:"c-blue",icon:"ti-topology-ring",patterns:[
+  {ds:"Graphs",col:"blue",icon:"ti-topology-ring",patterns:[
     {name:"BFS / DFS Traversal",problems:[
       {id:"g1",name:"Number of Islands",diff:"Medium",tag:"DFS/BFS Grid",lc:"200"},
       {id:"g2",name:"Max Area of Island",diff:"Medium",tag:"DFS",lc:"695"},
@@ -359,12 +1024,12 @@ const DATA = [
       {id:"g14",name:"Cheapest Flights Within K Stops",diff:"Medium",tag:"Bellman-Ford",lc:"787"},
       {id:"g15",name:"Path With Minimum Effort",diff:"Medium",tag:"Dijkstra",lc:"1631"},
     ]},
-    {name:"Cycle Detection / Bipartite",problems:[
+    {name:"Cycle / Bipartite",problems:[
       {id:"g16",name:"Is Graph Bipartite?",diff:"Medium",tag:"BFS Coloring",lc:"785"},
       {id:"g17",name:"Find Eventual Safe States",diff:"Medium",tag:"DFS+3Color",lc:"802"},
     ]},
   ]},
-  {ds:"Dynamic Programming",color:"c-purple",icon:"ti-stack-3",patterns:[
+  {ds:"Dynamic Programming",col:"purple",icon:"ti-stack-3",patterns:[
     {name:"1D / Fibonacci",problems:[
       {id:"dp1",name:"Climbing Stairs",diff:"Easy",tag:"Fibonacci DP",lc:"70"},
       {id:"dp2",name:"House Robber",diff:"Medium",tag:"1D DP",lc:"198"},
@@ -407,7 +1072,7 @@ const DATA = [
       {id:"dp27",name:"Best Time at Most 2 Transactions",diff:"Hard",tag:"State Machine",lc:"123"},
     ]},
   ]},
-  {ds:"Trie",color:"c-pink",icon:"ti-subtask",patterns:[
+  {ds:"Trie",col:"pink",icon:"ti-subtask",patterns:[
     {name:"Prefix Search",problems:[
       {id:"ty1",name:"Implement Trie",diff:"Medium",tag:"Trie Build",lc:"208"},
       {id:"ty2",name:"Add and Search Words",diff:"Medium",tag:"Trie+DFS",lc:"211"},
@@ -423,7 +1088,7 @@ const DATA = [
       {id:"ty8",name:"Maximum XOR with Element",diff:"Hard",tag:"Binary Trie",lc:"1707"},
     ]},
   ]},
-  {ds:"Bit Manipulation",color:"c-gray",icon:"ti-cpu",patterns:[
+  {ds:"Bit Manipulation",col:"gray",icon:"ti-cpu",patterns:[
     {name:"XOR Tricks",problems:[
       {id:"bm1",name:"Single Number",diff:"Easy",tag:"XOR",lc:"136"},
       {id:"bm2",name:"Single Number II",diff:"Medium",tag:"Bit Count",lc:"137"},
@@ -443,12 +1108,13 @@ const DATA = [
   ]},
 ];
 
-let solved = {};
-try { solved = JSON.parse(localStorage.getItem('dsa_solved') || '{}'); } catch(e) {}
+let solved = JSON.parse(localStorage.getItem('dsa_solved') || '{}');
+let collapsed = {};
+let activeDsFilter = null;
 
 function save(id, val) {
   solved[id] = val;
-  try { localStorage.setItem('dsa_solved', JSON.stringify(solved)); } catch(e) {}
+  localStorage.setItem('dsa_solved', JSON.stringify(solved));
   updateStats();
 }
 
@@ -462,18 +1128,52 @@ function updateStats() {
   document.getElementById('st-total').textContent = all.length;
   document.getElementById('st-solved').textContent = s;
   document.getElementById('st-rem').textContent = all.length - s;
-  document.getElementById('st-pct').textContent = Math.round(s / all.length * 100) + '%';
+  const pct = Math.round(s / all.length * 100);
+  document.getElementById('st-pct').textContent = pct + '%';
+  document.getElementById('mp-fill').style.width = pct + '%';
+  document.getElementById('mp-pct-label').textContent = pct + '%';
 }
 
 function resetAll() {
-  if (!confirm('Reset all progress?')) return;
+  if (!confirm('Reset all progress? This cannot be undone.')) return;
   solved = {};
-  try { localStorage.removeItem('dsa_solved'); } catch(e) {}
+  localStorage.removeItem('dsa_solved');
   document.querySelectorAll('.chk').forEach(c => c.checked = false);
+  document.querySelectorAll('.p-name').forEach(el => el.classList.remove('solved'));
   updateStats();
 }
 
-let collapsed = {};
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  document.getElementById('theme-icon').className = isDark ? 'ti ti-moon' : 'ti ti-sun';
+}
+
+function buildDsChips() {
+  const wrap = document.getElementById('ds-chips');
+  const label = wrap.querySelector('.ds-filter-label');
+  wrap.innerHTML = '';
+  wrap.appendChild(label);
+
+  const allChip = document.createElement('button');
+  allChip.className = 'ds-chip' + (activeDsFilter === null ? ' active' : '');
+  allChip.textContent = 'All';
+  allChip.onclick = () => { activeDsFilter = null; buildDsChips(); render(); };
+  wrap.appendChild(allChip);
+
+  DATA.forEach(ds => {
+    const chip = document.createElement('button');
+    chip.className = 'ds-chip' + (activeDsFilter === ds.ds ? ' active' : '');
+    chip.textContent = ds.ds;
+    chip.onclick = () => { activeDsFilter = activeDsFilter === ds.ds ? null : ds.ds; buildDsChips(); render(); };
+    wrap.appendChild(chip);
+  });
+}
+
+function lcSlug(name) {
+  return name.toLowerCase().replace(/[^a-z0-9\s]/g,'').trim().replace(/\s+/g,'-');
+}
 
 function render() {
   const q = document.getElementById('search').value.toLowerCase();
@@ -482,11 +1182,15 @@ function render() {
   const board = document.getElementById('board');
   board.innerHTML = '';
 
-  DATA.forEach(ds => {
+  let anyVisible = false;
+
+  DATA.forEach((ds, dsi) => {
+    if (activeDsFilter && activeDsFilter !== ds.ds) return;
+
     const filtered = ds.patterns.map(pat => ({
       ...pat,
       problems: pat.problems.filter(p => {
-        if (q && !p.name.toLowerCase().includes(q) && !pat.name.toLowerCase().includes(q)) return false;
+        if (q && !p.name.toLowerCase().includes(q) && !pat.name.toLowerCase().includes(q) && !ds.ds.toLowerCase().includes(q)) return false;
         if (fd && p.diff !== fd) return false;
         if (fs === 'done' && !solved[p.id]) return false;
         if (fs === 'todo' && solved[p.id]) return false;
@@ -495,57 +1199,74 @@ function render() {
     })).filter(pat => pat.problems.length > 0);
 
     if (filtered.length === 0) return;
+    anyVisible = true;
 
     const totalHere = filtered.reduce((a, p) => a + p.problems.length, 0);
     const solvedHere = filtered.reduce((a, p) => a + p.problems.filter(x => solved[x.id]).length, 0);
     const pct = totalHere ? Math.round(solvedHere / totalHere * 100) : 0;
-    const isOpen = !collapsed[ds.ds];
+    const isOpen = collapsed[ds.ds] !== true;
 
     const sec = document.createElement('div');
     sec.className = 'ds-section';
+    sec.style.animationDelay = (dsi * 0.03) + 's';
 
-    sec.innerHTML = `
+    const headerHtml = `
       <div class="ds-header" onclick="toggleSection('${ds.ds}')">
-        <div class="ds-icon ${ds.color}" style="font-size:14px"><i class="ti ${ds.icon}" aria-hidden="true"></i></div>
-        <span class="ds-title">${ds.ds}</span>
-        <div class="ds-meta">
-          <span class="ds-progress">${solvedHere}/${totalHere}</span>
-          <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:#1D9E75"></div></div>
-          <i class="ti ti-chevron-down chevron ${isOpen?'open':''}" aria-hidden="true"></i>
+        <div class="ds-icon-wrap color-${ds.col}">
+          <i class="ti ${ds.icon}" aria-hidden="true"></i>
         </div>
-      </div>
-      ${isOpen ? buildBody(filtered) : ''}
-    `;
+        <span class="ds-title">${ds.ds}</span>
+        <div class="ds-header-right">
+          <span class="ds-count">${solvedHere}/${totalHere}</span>
+          <div class="ds-bar-wrap"><div class="ds-bar-fill bar-${ds.col}" style="width:${pct}%"></div></div>
+          <span class="ds-pct">${pct}%</span>
+          <i class="ti ti-chevron-down chevron-icon ${isOpen ? 'open' : ''}" aria-hidden="true"></i>
+        </div>
+      </div>`;
+
+    let bodyHtml = '';
+    if (isOpen) {
+      bodyHtml = '<div class="ds-body"><div class="pb-section-wrap">';
+      filtered.forEach(pat => {
+        const patSolved = pat.problems.filter(p => solved[p.id]).length;
+        bodyHtml += `
+          <div class="pattern-group">
+            <div class="pattern-header">
+              <span class="pattern-name">${pat.name}</span>
+              <span class="pattern-count">${patSolved}/${pat.problems.length}</span>
+            </div>
+            <div class="col-head">
+              <span></span><span>Problem</span><span>Tag</span><span>Difficulty</span><span>LC#</span>
+            </div>`;
+        pat.problems.forEach(p => {
+          const isSolved = !!solved[p.id];
+          bodyHtml += `
+            <div class="problem-row">
+              <div class="chk-wrap">
+                <input type="checkbox" class="chk" ${isSolved ? 'checked' : ''} onchange="save('${p.id}', this.checked); this.closest('.problem-row').querySelector('.p-name').classList.toggle('solved', this.checked)" aria-label="${p.name}">
+              </div>
+              <span class="p-name ${isSolved ? 'solved' : ''}">${p.name}</span>
+              <span class="tag-pill">${p.tag}</span>
+              <span class="diff-badge diff-${p.diff.toLowerCase()}">${p.diff}</span>
+              <a class="lc-link" href="https://leetcode.com/problems/${lcSlug(p.name)}/" target="_blank" rel="noopener" aria-label="LC ${p.lc}">
+                ${p.lc} <i class="ti ti-external-link"></i>
+              </a>
+            </div>`;
+        });
+        bodyHtml += `</div>`;
+      });
+      bodyHtml += '</div></div>';
+    }
+
+    sec.innerHTML = headerHtml + bodyHtml;
     board.appendChild(sec);
   });
 
+  if (!anyVisible) {
+    board.innerHTML = `<div class="empty-state"><i class="ti ti-search-off" aria-hidden="true"></i><p>No problems match your filters</p></div>`;
+  }
+
   updateStats();
-}
-
-function buildBody(patterns) {
-  let html = '<div class="pb-wrap">';
-  patterns.forEach(pat => {
-    html += `<div class="pattern-group">
-      <div class="pattern-label">${pat.name}</div>
-      <div class="col-head">
-        <span></span><span>Problem</span><span>Tag</span><span>Difficulty</span><span>LeetCode</span>
-      </div>`;
-    pat.problems.forEach(p => {
-      html += `<div class="problem-row">
-        <input type="checkbox" class="chk" ${solved[p.id]?'checked':''} onchange="save('${p.id}',this.checked)" aria-label="${p.name}">
-        <span class="p-name" style="${solved[p.id]?'text-decoration:line-through;color:var(--color-text-tertiary)':''}">${p.name}</span>
-        <span class="tag">${p.tag}</span>
-        <span class="diff-badge ${p.diff.toLowerCase()}">${p.diff}</span>
-        <a class="lc-link" onclick="openLink('https://leetcode.com/problems/${lcSlug(p.name)}/')" aria-label="Open ${p.name} on LeetCode">LC ${p.lc} <i class="ti ti-external-link" style="font-size:10px" aria-hidden="true"></i></a>
-      </div>`;
-    });
-    html += '</div>';
-  });
-  return html + '</div>';
-}
-
-function lcSlug(name) {
-  return name.toLowerCase().replace(/[^a-z0-9\s]/g,'').trim().replace(/\s+/g,'-');
 }
 
 function toggleSection(dsName) {
@@ -553,5 +1274,8 @@ function toggleSection(dsName) {
   render();
 }
 
+buildDsChips();
 render();
 </script>
+</body>
+</html>
