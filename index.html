@@ -1,0 +1,557 @@
+
+<h2 class="sr-only">DSA Pattern Practice Sheet — interactive problem tracker organized by data structure and pattern</h2>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans)}
+.top-bar{padding:1.25rem 0 1rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.top-bar h1{font-size:20px;font-weight:500;color:var(--color-text-primary)}
+.top-bar p{font-size:13px;color:var(--color-text-secondary);margin-top:2px}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.25rem}
+.stat-card{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:.75rem 1rem}
+.stat-card .lbl{font-size:12px;color:var(--color-text-secondary);margin-bottom:4px}
+.stat-card .val{font-size:20px;font-weight:500;color:var(--color-text-primary)}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.25rem;align-items:center}
+.filters select,.filters input{height:34px;font-size:13px;padding:0 10px;border-radius:var(--border-radius-md)}
+.filters input{flex:1;min-width:160px}
+.ds-section{margin-bottom:1.5rem;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden}
+.ds-header{display:flex;align-items:center;gap:10px;padding:.75rem 1rem;cursor:pointer;background:var(--color-background-secondary);user-select:none}
+.ds-header:hover{background:var(--color-background-tertiary)}
+.ds-icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.ds-title{font-size:14px;font-weight:500;color:var(--color-text-primary);flex:1}
+.ds-meta{display:flex;align-items:center;gap:8px}
+.ds-progress{font-size:12px;color:var(--color-text-secondary)}
+.progress-bar{width:80px;height:4px;background:var(--color-border-tertiary);border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;border-radius:2px;transition:width .3s}
+.chevron{font-size:14px;color:var(--color-text-tertiary);transition:transform .2s}
+.chevron.open{transform:rotate(180deg)}
+.pattern-group{padding:.5rem 1rem 0}
+.pattern-label{font-size:11px;font-weight:500;letter-spacing:.04em;color:var(--color-text-tertiary);text-transform:uppercase;padding:.6rem 0 .3rem;border-top:0.5px solid var(--color-border-tertiary);margin-top:.25rem}
+.pattern-label:first-child{border-top:none}
+.problem-row{display:grid;grid-template-columns:26px 1fr 80px 72px 72px;align-items:center;gap:8px;padding:5px 0;border-radius:6px}
+.problem-row:hover{background:var(--color-background-secondary)}
+.chk{width:16px;height:16px;accent-color:#5DCAA5;cursor:pointer;flex-shrink:0;justify-self:center}
+.p-name{font-size:13px;color:var(--color-text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.diff-badge{font-size:11px;padding:2px 7px;border-radius:4px;font-weight:500;text-align:center}
+.easy{background:#EAF3DE;color:#3B6D11}.medium{background:#FAEEDA;color:#854F0B}.hard{background:#FCEBEB;color:#A32D2D}
+@media (prefers-color-scheme:dark){
+  .easy{background:#27500A;color:#C0DD97}.medium{background:#633806;color:#FAC775}.hard{background:#791F1F;color:#F7C1C1}
+}
+.tag{font-size:11px;color:var(--color-text-secondary);border:0.5px solid var(--color-border-tertiary);padding:2px 6px;border-radius:4px;text-align:center}
+.lc-link{font-size:11px;color:var(--color-text-info);text-decoration:none;cursor:pointer;text-align:center}
+.lc-link:hover{text-decoration:underline}
+.col-head{display:grid;grid-template-columns:26px 1fr 80px 72px 72px;gap:8px;padding:4px 0 2px;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:2px}
+.col-head span{font-size:11px;color:var(--color-text-tertiary);font-weight:500}
+.col-head span:nth-child(1){text-align:center}
+.col-head span:nth-child(3),.col-head span:nth-child(4),.col-head span:nth-child(5){text-align:center}
+.pb-wrap{padding-bottom:.75rem}
+.empty{padding:1.5rem;text-align:center;font-size:13px;color:var(--color-text-tertiary)}
+.reset-btn{font-size:12px;padding:4px 10px;border-radius:var(--border-radius-md);cursor:pointer;background:transparent;border:0.5px solid var(--color-border-secondary);color:var(--color-text-secondary)}
+.reset-btn:hover{background:var(--color-background-secondary)}
+</style>
+
+<div class="top-bar">
+  <div>
+    <h1>DSA practice sheet</h1>
+    <p>Track your progress by pattern across every data structure</p>
+  </div>
+  <button class="reset-btn" onclick="resetAll()">Reset progress</button>
+</div>
+
+<div class="stats-row">
+  <div class="stat-card"><div class="lbl">Total problems</div><div class="val" id="st-total">0</div></div>
+  <div class="stat-card"><div class="lbl">Solved</div><div class="val" id="st-solved" style="color:#1D9E75">0</div></div>
+  <div class="stat-card"><div class="lbl">Remaining</div><div class="val" id="st-rem">0</div></div>
+  <div class="stat-card"><div class="lbl">Completion</div><div class="val" id="st-pct">0%</div></div>
+</div>
+
+<div class="filters">
+  <input type="text" id="search" placeholder="Search problems..." oninput="render()">
+  <select id="fDiff" onchange="render()"><option value="">All difficulties</option><option>Easy</option><option>Medium</option><option>Hard</option></select>
+  <select id="fStatus" onchange="render()"><option value="">All status</option><option value="done">Solved</option><option value="todo">Unsolved</option></select>
+</div>
+
+<div id="board"></div>
+
+<script>
+const DATA = [
+  {ds:"Arrays",color:"c-teal",icon:"ti-layout-grid",patterns:[
+    {name:"Prefix Sum",problems:[
+      {id:"p1",name:"Subarray Sum Equals K",diff:"Medium",tag:"Prefix+Hash",lc:"560"},
+      {id:"p2",name:"Range Sum Query",diff:"Easy",tag:"Prefix",lc:"303"},
+      {id:"p3",name:"Product of Array Except Self",diff:"Medium",tag:"Prefix+Suffix",lc:"238"},
+      {id:"p4",name:"Find Pivot Index",diff:"Easy",tag:"Prefix Sum",lc:"724"},
+      {id:"p5",name:"Count of Subarrays with XOR = K",diff:"Medium",tag:"Prefix XOR",lc:"1442"},
+    ]},
+    {name:"Sliding Window",problems:[
+      {id:"p6",name:"Maximum Average Subarray I",diff:"Easy",tag:"Fixed Window",lc:"643"},
+      {id:"p7",name:"Longest Subarray with Sum ≤ K",diff:"Medium",tag:"Variable Window",lc:"2401"},
+      {id:"p8",name:"Maximum Points from Cards",diff:"Medium",tag:"Fixed Window",lc:"1423"},
+      {id:"p9",name:"Minimum Size Subarray Sum",diff:"Medium",tag:"Variable Window",lc:"209"},
+    ]},
+    {name:"Kadane's",problems:[
+      {id:"p10",name:"Maximum Subarray",diff:"Medium",tag:"Kadane's",lc:"53"},
+      {id:"p11",name:"Maximum Product Subarray",diff:"Medium",tag:"Kadane's Variant",lc:"152"},
+      {id:"p12",name:"Maximum Sum Circular Subarray",diff:"Medium",tag:"Kadane's + Circular",lc:"918"},
+    ]},
+    {name:"Two Pointers",problems:[
+      {id:"p13",name:"Two Sum II (Sorted)",diff:"Medium",tag:"Two Pointers",lc:"167"},
+      {id:"p14",name:"3Sum",diff:"Medium",tag:"Sort + 2P",lc:"15"},
+      {id:"p15",name:"Container With Most Water",diff:"Medium",tag:"Two Pointers",lc:"11"},
+      {id:"p16",name:"Trapping Rain Water",diff:"Hard",tag:"Two Pointers",lc:"42"},
+      {id:"p17",name:"4Sum",diff:"Medium",tag:"Sort + 2P",lc:"18"},
+    ]},
+    {name:"Dutch National Flag / Partition",problems:[
+      {id:"p18",name:"Sort Colors",diff:"Medium",tag:"3-Way Partition",lc:"75"},
+      {id:"p19",name:"Move Zeroes",diff:"Easy",tag:"Two Pointers",lc:"283"},
+      {id:"p20",name:"Partition Array by Parity",diff:"Easy",tag:"Two Pointers",lc:"905"},
+    ]},
+    {name:"Merge Intervals",problems:[
+      {id:"p21",name:"Merge Intervals",diff:"Medium",tag:"Sort + Merge",lc:"56"},
+      {id:"p22",name:"Insert Interval",diff:"Medium",tag:"Merge",lc:"57"},
+      {id:"p23",name:"Non-overlapping Intervals",diff:"Medium",tag:"Greedy",lc:"435"},
+      {id:"p24",name:"Meeting Rooms II",diff:"Medium",tag:"Heap / Sweep",lc:"253"},
+    ]},
+  ]},
+  {ds:"Strings",color:"c-purple",icon:"ti-letter-case",patterns:[
+    {name:"Frequency Counting",problems:[
+      {id:"s1",name:"Valid Anagram",diff:"Easy",tag:"Freq Array",lc:"242"},
+      {id:"s2",name:"Group Anagrams",diff:"Medium",tag:"Sort Key",lc:"49"},
+      {id:"s3",name:"First Unique Character",diff:"Easy",tag:"Freq Map",lc:"387"},
+      {id:"s4",name:"Ransom Note",diff:"Easy",tag:"Freq Count",lc:"383"},
+    ]},
+    {name:"Sliding Window",problems:[
+      {id:"s5",name:"Longest Substring Without Repeating",diff:"Medium",tag:"Variable Window",lc:"3"},
+      {id:"s6",name:"Longest Repeating Char Replacement",diff:"Medium",tag:"Variable Window",lc:"424"},
+      {id:"s7",name:"Minimum Window Substring",diff:"Hard",tag:"Variable Window",lc:"76"},
+      {id:"s8",name:"Permutation in String",diff:"Medium",tag:"Fixed Window",lc:"567"},
+      {id:"s9",name:"Find All Anagrams in a String",diff:"Medium",tag:"Fixed Window",lc:"438"},
+    ]},
+    {name:"Palindrome",problems:[
+      {id:"s10",name:"Valid Palindrome",diff:"Easy",tag:"Two Pointers",lc:"125"},
+      {id:"s11",name:"Longest Palindromic Substring",diff:"Medium",tag:"Expand Center",lc:"5"},
+      {id:"s12",name:"Palindromic Substrings",diff:"Medium",tag:"Expand Center",lc:"647"},
+      {id:"s13",name:"Valid Palindrome II",diff:"Easy",tag:"Two Pointers",lc:"680"},
+    ]},
+    {name:"KMP / Pattern Matching",problems:[
+      {id:"s14",name:"Find the Index of First Occurrence",diff:"Easy",tag:"KMP",lc:"28"},
+      {id:"s15",name:"Repeated Substring Pattern",diff:"Easy",tag:"KMP/LPS",lc:"459"},
+      {id:"s16",name:"Shortest Palindrome",diff:"Hard",tag:"KMP",lc:"214"},
+    ]},
+  ]},
+  {ds:"Hashing",color:"c-coral",icon:"ti-hash",patterns:[
+    {name:"HashMap Lookup",problems:[
+      {id:"h1",name:"Two Sum",diff:"Easy",tag:"HashMap",lc:"1"},
+      {id:"h2",name:"Isomorphic Strings",diff:"Easy",tag:"Dual Map",lc:"205"},
+      {id:"h3",name:"Word Pattern",diff:"Easy",tag:"Dual Map",lc:"290"},
+      {id:"h4",name:"4Sum II",diff:"Medium",tag:"HashMap",lc:"454"},
+    ]},
+    {name:"Frequency / Count Map",problems:[
+      {id:"h5",name:"Top K Frequent Elements",diff:"Medium",tag:"Freq+Heap",lc:"347"},
+      {id:"h6",name:"Sort Characters by Frequency",diff:"Medium",tag:"Freq+Heap",lc:"451"},
+      {id:"h7",name:"Majority Element",diff:"Easy",tag:"Freq Map",lc:"169"},
+    ]},
+    {name:"Set Optimization",problems:[
+      {id:"h8",name:"Longest Consecutive Sequence",diff:"Medium",tag:"HashSet",lc:"128"},
+      {id:"h9",name:"Contains Duplicate",diff:"Easy",tag:"HashSet",lc:"217"},
+      {id:"h10",name:"Happy Number",diff:"Easy",tag:"HashSet/Floyd",lc:"202"},
+      {id:"h11",name:"Intersection of Two Arrays",diff:"Easy",tag:"HashSet",lc:"349"},
+    ]},
+  ]},
+  {ds:"Linked List",color:"c-blue",icon:"ti-link",patterns:[
+    {name:"Fast & Slow Pointers",problems:[
+      {id:"ll1",name:"Linked List Cycle",diff:"Easy",tag:"Floyd's",lc:"141"},
+      {id:"ll2",name:"Linked List Cycle II",diff:"Medium",tag:"Floyd's",lc:"142"},
+      {id:"ll3",name:"Middle of the Linked List",diff:"Easy",tag:"Fast/Slow",lc:"876"},
+      {id:"ll4",name:"Palindrome Linked List",diff:"Easy",tag:"Fast/Slow+Rev",lc:"234"},
+    ]},
+    {name:"Reversal",problems:[
+      {id:"ll5",name:"Reverse Linked List",diff:"Easy",tag:"Iterative",lc:"206"},
+      {id:"ll6",name:"Reverse Linked List II",diff:"Medium",tag:"Partial Rev",lc:"92"},
+      {id:"ll7",name:"Reverse Nodes in k-Group",diff:"Hard",tag:"Reversal",lc:"25"},
+    ]},
+    {name:"Merge / Multi-list",problems:[
+      {id:"ll8",name:"Merge Two Sorted Lists",diff:"Easy",tag:"Merge",lc:"21"},
+      {id:"ll9",name:"Merge K Sorted Lists",diff:"Hard",tag:"Heap Merge",lc:"23"},
+      {id:"ll10",name:"Add Two Numbers",diff:"Medium",tag:"Simulation",lc:"2"},
+      {id:"ll11",name:"Intersection of Two Lists",diff:"Easy",tag:"Two Pointers",lc:"160"},
+    ]},
+    {name:"LRU / Design",problems:[
+      {id:"ll12",name:"LRU Cache",diff:"Medium",tag:"HashMap+DLL",lc:"146"},
+      {id:"ll13",name:"LFU Cache",diff:"Hard",tag:"HashMap+DLL",lc:"460"},
+    ]},
+  ]},
+  {ds:"Stack",color:"c-amber",icon:"ti-stack-2",patterns:[
+    {name:"Monotonic Stack",problems:[
+      {id:"st1",name:"Next Greater Element I",diff:"Easy",tag:"Mono Stack",lc:"496"},
+      {id:"st2",name:"Next Greater Element II",diff:"Medium",tag:"Circular Mono",lc:"503"},
+      {id:"st3",name:"Daily Temperatures",diff:"Medium",tag:"Mono Stack",lc:"739"},
+      {id:"st4",name:"Sum of Subarray Minimums",diff:"Medium",tag:"Mono Stack",lc:"907"},
+      {id:"st5",name:"Largest Rectangle in Histogram",diff:"Hard",tag:"Mono Stack",lc:"84"},
+      {id:"st6",name:"Trapping Rain Water (Stack)",diff:"Hard",tag:"Mono Stack",lc:"42"},
+    ]},
+    {name:"Parentheses / Matching",problems:[
+      {id:"st7",name:"Valid Parentheses",diff:"Easy",tag:"Stack Match",lc:"20"},
+      {id:"st8",name:"Minimum Remove to Make Valid",diff:"Medium",tag:"Stack",lc:"1249"},
+      {id:"st9",name:"Longest Valid Parentheses",diff:"Hard",tag:"Stack/DP",lc:"32"},
+    ]},
+    {name:"Expression Evaluation",problems:[
+      {id:"st10",name:"Basic Calculator II",diff:"Medium",tag:"Stack+Ops",lc:"227"},
+      {id:"st11",name:"Evaluate Reverse Polish Notation",diff:"Medium",tag:"Stack",lc:"150"},
+      {id:"st12",name:"Decode String",diff:"Medium",tag:"Stack",lc:"394"},
+    ]},
+  ]},
+  {ds:"Queue & Deque",color:"c-pink",icon:"ti-arrows-right-left",patterns:[
+    {name:"BFS",problems:[
+      {id:"q1",name:"Binary Tree Level Order Traversal",diff:"Medium",tag:"BFS",lc:"102"},
+      {id:"q2",name:"Rotting Oranges",diff:"Medium",tag:"Multi-source BFS",lc:"994"},
+      {id:"q3",name:"Word Ladder",diff:"Hard",tag:"BFS",lc:"127"},
+      {id:"q4",name:"Open the Lock",diff:"Medium",tag:"BFS",lc:"752"},
+    ]},
+    {name:"Monotonic Deque",problems:[
+      {id:"q5",name:"Sliding Window Maximum",diff:"Hard",tag:"Mono Deque",lc:"239"},
+      {id:"q6",name:"Jump Game VI",diff:"Medium",tag:"Deque+DP",lc:"1696"},
+      {id:"q7",name:"Shortest Subarray with Sum ≥ K",diff:"Hard",tag:"Mono Deque",lc:"862"},
+    ]},
+  ]},
+  {ds:"Binary Search",color:"c-green",icon:"ti-arrows-split",patterns:[
+    {name:"Classic Search",problems:[
+      {id:"bs1",name:"Binary Search",diff:"Easy",tag:"Standard",lc:"704"},
+      {id:"bs2",name:"Search Insert Position",diff:"Easy",tag:"Lower Bound",lc:"35"},
+      {id:"bs3",name:"Find First and Last Position",diff:"Medium",tag:"Lo+Hi Bound",lc:"34"},
+      {id:"bs4",name:"Count Elements in Sorted Array",diff:"Easy",tag:"Upper-Lower",lc:"2529"},
+    ]},
+    {name:"Rotated Array",problems:[
+      {id:"bs5",name:"Find Minimum in Rotated Array",diff:"Medium",tag:"Rotated BS",lc:"153"},
+      {id:"bs6",name:"Search in Rotated Array",diff:"Medium",tag:"Rotated BS",lc:"33"},
+      {id:"bs7",name:"Search in Rotated Array II",diff:"Medium",tag:"Rotated+Dup",lc:"81"},
+    ]},
+    {name:"Binary Search on Answer",problems:[
+      {id:"bs8",name:"Koko Eating Bananas",diff:"Medium",tag:"BS on Answer",lc:"875"},
+      {id:"bs9",name:"Capacity to Ship Packages",diff:"Medium",tag:"BS on Answer",lc:"1011"},
+      {id:"bs10",name:"Minimum Days to Make Bouquets",diff:"Medium",tag:"BS on Answer",lc:"1482"},
+      {id:"bs11",name:"Split Array Largest Sum",diff:"Hard",tag:"BS on Answer",lc:"410"},
+      {id:"bs12",name:"Median of Two Sorted Arrays",diff:"Hard",tag:"BS on Partition",lc:"4"},
+    ]},
+  ]},
+  {ds:"Recursion & Backtracking",color:"c-coral",icon:"ti-refresh",patterns:[
+    {name:"Subsets",problems:[
+      {id:"bt1",name:"Subsets",diff:"Medium",tag:"Backtrack",lc:"78"},
+      {id:"bt2",name:"Subsets II (Duplicates)",diff:"Medium",tag:"Backtrack+Prune",lc:"90"},
+    ]},
+    {name:"Permutations",problems:[
+      {id:"bt3",name:"Permutations",diff:"Medium",tag:"Backtrack",lc:"46"},
+      {id:"bt4",name:"Permutations II (Duplicates)",diff:"Medium",tag:"Backtrack+Prune",lc:"47"},
+      {id:"bt5",name:"Next Permutation",diff:"Medium",tag:"Two Pointers",lc:"31"},
+    ]},
+    {name:"Combinations",problems:[
+      {id:"bt6",name:"Combination Sum",diff:"Medium",tag:"Backtrack",lc:"39"},
+      {id:"bt7",name:"Combination Sum II",diff:"Medium",tag:"Backtrack+Prune",lc:"40"},
+      {id:"bt8",name:"Combinations",diff:"Medium",tag:"Backtrack",lc:"77"},
+    ]},
+    {name:"Grid / Decision Problems",problems:[
+      {id:"bt9",name:"N-Queens",diff:"Hard",tag:"Constraint Bt",lc:"51"},
+      {id:"bt10",name:"Sudoku Solver",diff:"Hard",tag:"Constraint Bt",lc:"37"},
+      {id:"bt11",name:"Word Search",diff:"Medium",tag:"DFS+Backtrack",lc:"79"},
+      {id:"bt12",name:"Letter Combinations of Phone",diff:"Medium",tag:"Backtrack",lc:"17"},
+    ]},
+  ]},
+  {ds:"Trees",color:"c-teal",icon:"ti-binary-tree",patterns:[
+    {name:"DFS",problems:[
+      {id:"tr1",name:"Invert Binary Tree",diff:"Easy",tag:"DFS",lc:"226"},
+      {id:"tr2",name:"Diameter of Binary Tree",diff:"Easy",tag:"DFS+PostOrder",lc:"543"},
+      {id:"tr3",name:"Path Sum II",diff:"Medium",tag:"DFS",lc:"113"},
+      {id:"tr4",name:"Binary Tree Maximum Path Sum",diff:"Hard",tag:"DFS+Global",lc:"124"},
+      {id:"tr5",name:"All Nodes at Distance K",diff:"Medium",tag:"DFS+BFS",lc:"863"},
+    ]},
+    {name:"BFS / Level Order",problems:[
+      {id:"tr6",name:"Binary Tree Level Order Traversal",diff:"Medium",tag:"BFS",lc:"102"},
+      {id:"tr7",name:"Binary Tree Zigzag Level Order",diff:"Medium",tag:"BFS+Deque",lc:"103"},
+      {id:"tr8",name:"Minimum Depth of Binary Tree",diff:"Easy",tag:"BFS",lc:"111"},
+    ]},
+    {name:"LCA / Ancestors",problems:[
+      {id:"tr9",name:"Lowest Common Ancestor",diff:"Medium",tag:"DFS",lc:"236"},
+      {id:"tr10",name:"Kth Ancestor of a Tree Node",diff:"Hard",tag:"Binary Lifting",lc:"1483"},
+    ]},
+    {name:"Tree Construction",problems:[
+      {id:"tr11",name:"Construct from Preorder+Inorder",diff:"Medium",tag:"Recursion",lc:"105"},
+      {id:"tr12",name:"Serialize and Deserialize",diff:"Hard",tag:"BFS/DFS Codec",lc:"297"},
+    ]},
+    {name:"Tree DP",problems:[
+      {id:"tr13",name:"House Robber III",diff:"Medium",tag:"Tree DP",lc:"337"},
+      {id:"tr14",name:"Distribute Coins in Binary Tree",diff:"Medium",tag:"Tree DP",lc:"979"},
+    ]},
+  ]},
+  {ds:"BST",color:"c-purple",icon:"ti-binary-tree-2",patterns:[
+    {name:"Validation & Properties",problems:[
+      {id:"bst1",name:"Validate Binary Search Tree",diff:"Medium",tag:"DFS+Bounds",lc:"98"},
+      {id:"bst2",name:"Recover BST (Two Swapped Nodes)",diff:"Medium",tag:"Inorder",lc:"99"},
+    ]},
+    {name:"BST Search & Operations",problems:[
+      {id:"bst3",name:"Kth Smallest in BST",diff:"Medium",tag:"Inorder",lc:"230"},
+      {id:"bst4",name:"Insert into BST",diff:"Medium",tag:"BST Insert",lc:"701"},
+      {id:"bst5",name:"Delete Node in BST",diff:"Medium",tag:"BST Delete",lc:"450"},
+      {id:"bst6",name:"Search in BST",diff:"Easy",tag:"BST Search",lc:"700"},
+    ]},
+    {name:"Range & Conversion",problems:[
+      {id:"bst7",name:"Range Sum of BST",diff:"Easy",tag:"DFS+Pruning",lc:"938"},
+      {id:"bst8",name:"Convert Sorted Array to BST",diff:"Easy",tag:"Divide+Conquer",lc:"108"},
+      {id:"bst9",name:"BST Iterator",diff:"Medium",tag:"Inorder+Stack",lc:"173"},
+    ]},
+  ]},
+  {ds:"Heap / Priority Queue",color:"c-amber",icon:"ti-pyramid",patterns:[
+    {name:"Top K Problems",problems:[
+      {id:"hp1",name:"Top K Frequent Elements",diff:"Medium",tag:"MinHeap K",lc:"347"},
+      {id:"hp2",name:"K Closest Points to Origin",diff:"Medium",tag:"MinHeap K",lc:"973"},
+      {id:"hp3",name:"Kth Largest Element in Array",diff:"Medium",tag:"MinHeap / QS",lc:"215"},
+      {id:"hp4",name:"Kth Largest in Stream",diff:"Easy",tag:"MinHeap",lc:"703"},
+    ]},
+    {name:"Merge K Sorted",problems:[
+      {id:"hp5",name:"Merge K Sorted Lists",diff:"Hard",tag:"MinHeap",lc:"23"},
+      {id:"hp6",name:"Smallest Range Covering K Lists",diff:"Hard",tag:"MinHeap",lc:"632"},
+    ]},
+    {name:"Two Heaps (Median)",problems:[
+      {id:"hp7",name:"Find Median from Data Stream",diff:"Hard",tag:"Two Heaps",lc:"295"},
+      {id:"hp8",name:"Sliding Window Median",diff:"Hard",tag:"Two Heaps",lc:"480"},
+    ]},
+    {name:"Scheduling / Greedy",problems:[
+      {id:"hp9",name:"Task Scheduler",diff:"Medium",tag:"MaxHeap+Greedy",lc:"621"},
+      {id:"hp10",name:"Reorganize String",diff:"Medium",tag:"MaxHeap",lc:"767"},
+      {id:"hp11",name:"Meeting Rooms II",diff:"Medium",tag:"MinHeap",lc:"253"},
+    ]},
+  ]},
+  {ds:"Greedy",color:"c-green",icon:"ti-bolt",patterns:[
+    {name:"Interval Scheduling",problems:[
+      {id:"gr1",name:"Non-overlapping Intervals",diff:"Medium",tag:"Sort+Greedy",lc:"435"},
+      {id:"gr2",name:"Minimum Number of Arrows",diff:"Medium",tag:"Sort+Greedy",lc:"452"},
+      {id:"gr3",name:"Meeting Rooms II",diff:"Medium",tag:"Greedy+Heap",lc:"253"},
+    ]},
+    {name:"Jump / Reach",problems:[
+      {id:"gr4",name:"Jump Game",diff:"Medium",tag:"Greedy",lc:"55"},
+      {id:"gr5",name:"Jump Game II",diff:"Medium",tag:"Greedy BFS",lc:"45"},
+    ]},
+    {name:"Other Greedy",problems:[
+      {id:"gr6",name:"Gas Station",diff:"Medium",tag:"Greedy",lc:"134"},
+      {id:"gr7",name:"Candy",diff:"Hard",tag:"Two-Pass Greedy",lc:"135"},
+      {id:"gr8",name:"Partition Labels",diff:"Medium",tag:"Greedy",lc:"763"},
+    ]},
+  ]},
+  {ds:"Graphs",color:"c-blue",icon:"ti-topology-ring",patterns:[
+    {name:"BFS / DFS Traversal",problems:[
+      {id:"g1",name:"Number of Islands",diff:"Medium",tag:"DFS/BFS Grid",lc:"200"},
+      {id:"g2",name:"Max Area of Island",diff:"Medium",tag:"DFS",lc:"695"},
+      {id:"g3",name:"Clone Graph",diff:"Medium",tag:"BFS+HashMap",lc:"133"},
+      {id:"g4",name:"Pacific Atlantic Water Flow",diff:"Medium",tag:"BFS/DFS",lc:"417"},
+    ]},
+    {name:"Topological Sort",problems:[
+      {id:"g5",name:"Course Schedule",diff:"Medium",tag:"Topo Sort",lc:"207"},
+      {id:"g6",name:"Course Schedule II",diff:"Medium",tag:"Kahn's",lc:"210"},
+      {id:"g7",name:"Alien Dictionary",diff:"Hard",tag:"Topo Sort",lc:"269"},
+      {id:"g8",name:"Sequence Reconstruction",diff:"Medium",tag:"Topo Sort",lc:"444"},
+    ]},
+    {name:"Union Find",problems:[
+      {id:"g9",name:"Number of Connected Components",diff:"Medium",tag:"Union-Find",lc:"323"},
+      {id:"g10",name:"Graph Valid Tree",diff:"Medium",tag:"Union-Find",lc:"261"},
+      {id:"g11",name:"Redundant Connection",diff:"Medium",tag:"Union-Find",lc:"684"},
+      {id:"g12",name:"Accounts Merge",diff:"Medium",tag:"Union-Find",lc:"721"},
+    ]},
+    {name:"Shortest Path",problems:[
+      {id:"g13",name:"Network Delay Time",diff:"Medium",tag:"Dijkstra",lc:"743"},
+      {id:"g14",name:"Cheapest Flights Within K Stops",diff:"Medium",tag:"Bellman-Ford",lc:"787"},
+      {id:"g15",name:"Path With Minimum Effort",diff:"Medium",tag:"Dijkstra",lc:"1631"},
+    ]},
+    {name:"Cycle Detection / Bipartite",problems:[
+      {id:"g16",name:"Is Graph Bipartite?",diff:"Medium",tag:"BFS Coloring",lc:"785"},
+      {id:"g17",name:"Find Eventual Safe States",diff:"Medium",tag:"DFS+3Color",lc:"802"},
+    ]},
+  ]},
+  {ds:"Dynamic Programming",color:"c-purple",icon:"ti-stack-3",patterns:[
+    {name:"1D / Fibonacci",problems:[
+      {id:"dp1",name:"Climbing Stairs",diff:"Easy",tag:"Fibonacci DP",lc:"70"},
+      {id:"dp2",name:"House Robber",diff:"Medium",tag:"1D DP",lc:"198"},
+      {id:"dp3",name:"House Robber II",diff:"Medium",tag:"Circular 1D DP",lc:"213"},
+      {id:"dp4",name:"Decode Ways",diff:"Medium",tag:"1D DP",lc:"91"},
+      {id:"dp5",name:"Min Cost Climbing Stairs",diff:"Easy",tag:"1D DP",lc:"746"},
+    ]},
+    {name:"0/1 Knapsack",problems:[
+      {id:"dp6",name:"Partition Equal Subset Sum",diff:"Medium",tag:"0/1 Knapsack",lc:"416"},
+      {id:"dp7",name:"Last Stone Weight II",diff:"Medium",tag:"0/1 Knapsack",lc:"1049"},
+      {id:"dp8",name:"Target Sum",diff:"Medium",tag:"0/1 Knapsack",lc:"494"},
+    ]},
+    {name:"Unbounded Knapsack",problems:[
+      {id:"dp9",name:"Coin Change",diff:"Medium",tag:"Unbounded KS",lc:"322"},
+      {id:"dp10",name:"Coin Change II",diff:"Medium",tag:"Unbounded KS",lc:"518"},
+      {id:"dp11",name:"Word Break",diff:"Medium",tag:"DP+HashSet",lc:"139"},
+      {id:"dp12",name:"Combination Sum IV",diff:"Medium",tag:"Unbounded KS",lc:"377"},
+    ]},
+    {name:"LIS / LCS",problems:[
+      {id:"dp13",name:"Longest Increasing Subsequence",diff:"Medium",tag:"LIS DP",lc:"300"},
+      {id:"dp14",name:"Russian Doll Envelopes",diff:"Hard",tag:"LIS+BS",lc:"354"},
+      {id:"dp15",name:"Longest Common Subsequence",diff:"Medium",tag:"LCS 2D DP",lc:"1143"},
+      {id:"dp16",name:"Edit Distance",diff:"Medium",tag:"LCS Variant",lc:"72"},
+      {id:"dp17",name:"Longest Increasing Subarray",diff:"Easy",tag:"LIS Variant",lc:"674"},
+    ]},
+    {name:"Grid DP",problems:[
+      {id:"dp18",name:"Unique Paths",diff:"Medium",tag:"Grid DP",lc:"62"},
+      {id:"dp19",name:"Minimum Path Sum",diff:"Medium",tag:"Grid DP",lc:"64"},
+      {id:"dp20",name:"Dungeon Game",diff:"Hard",tag:"Grid DP",lc:"174"},
+      {id:"dp21",name:"Maximal Square",diff:"Medium",tag:"Grid DP",lc:"221"},
+    ]},
+    {name:"Interval / Partition DP",problems:[
+      {id:"dp22",name:"Palindrome Partitioning II",diff:"Hard",tag:"Partition DP",lc:"132"},
+      {id:"dp23",name:"Burst Balloons",diff:"Hard",tag:"Interval DP",lc:"312"},
+      {id:"dp24",name:"Strange Printer",diff:"Hard",tag:"Interval DP",lc:"664"},
+    ]},
+    {name:"State Machine DP",problems:[
+      {id:"dp25",name:"Best Time to Buy/Sell with Cooldown",diff:"Medium",tag:"State Machine",lc:"309"},
+      {id:"dp26",name:"Best Time with Transaction Fee",diff:"Medium",tag:"State Machine",lc:"714"},
+      {id:"dp27",name:"Best Time at Most 2 Transactions",diff:"Hard",tag:"State Machine",lc:"123"},
+    ]},
+  ]},
+  {ds:"Trie",color:"c-pink",icon:"ti-subtask",patterns:[
+    {name:"Prefix Search",problems:[
+      {id:"ty1",name:"Implement Trie",diff:"Medium",tag:"Trie Build",lc:"208"},
+      {id:"ty2",name:"Add and Search Words",diff:"Medium",tag:"Trie+DFS",lc:"211"},
+      {id:"ty3",name:"Design Search Autocomplete",diff:"Hard",tag:"Trie+Heap",lc:"642"},
+    ]},
+    {name:"Word Problems",problems:[
+      {id:"ty4",name:"Word Search II",diff:"Hard",tag:"Trie+Backtrack",lc:"212"},
+      {id:"ty5",name:"Replace Words",diff:"Medium",tag:"Trie",lc:"648"},
+      {id:"ty6",name:"Index Pairs of a String",diff:"Easy",tag:"Trie",lc:"1065"},
+    ]},
+    {name:"XOR / Bit Trie",problems:[
+      {id:"ty7",name:"Maximum XOR of Two Numbers",diff:"Medium",tag:"Binary Trie",lc:"421"},
+      {id:"ty8",name:"Maximum XOR with Element",diff:"Hard",tag:"Binary Trie",lc:"1707"},
+    ]},
+  ]},
+  {ds:"Bit Manipulation",color:"c-gray",icon:"ti-cpu",patterns:[
+    {name:"XOR Tricks",problems:[
+      {id:"bm1",name:"Single Number",diff:"Easy",tag:"XOR",lc:"136"},
+      {id:"bm2",name:"Single Number II",diff:"Medium",tag:"Bit Count",lc:"137"},
+      {id:"bm3",name:"Single Number III",diff:"Medium",tag:"XOR Split",lc:"260"},
+      {id:"bm4",name:"Missing Number",diff:"Easy",tag:"XOR",lc:"268"},
+    ]},
+    {name:"Bit Counting / Powers",problems:[
+      {id:"bm5",name:"Number of 1 Bits",diff:"Easy",tag:"Kernighan",lc:"191"},
+      {id:"bm6",name:"Counting Bits",diff:"Easy",tag:"DP+Bits",lc:"338"},
+      {id:"bm7",name:"Power of Two",diff:"Easy",tag:"n & (n-1)",lc:"231"},
+      {id:"bm8",name:"Reverse Bits",diff:"Easy",tag:"Bit Ops",lc:"190"},
+    ]},
+    {name:"Subset / Bitmask",problems:[
+      {id:"bm9",name:"Subsets (Bitmask)",diff:"Medium",tag:"Bitmask",lc:"78"},
+      {id:"bm10",name:"Sum of All Subset XOR Totals",diff:"Easy",tag:"Bitmask",lc:"1863"},
+    ]},
+  ]},
+];
+
+let solved = {};
+try { solved = JSON.parse(localStorage.getItem('dsa_solved') || '{}'); } catch(e) {}
+
+function save(id, val) {
+  solved[id] = val;
+  try { localStorage.setItem('dsa_solved', JSON.stringify(solved)); } catch(e) {}
+  updateStats();
+}
+
+function allProblems() {
+  return DATA.flatMap(ds => ds.patterns.flatMap(p => p.problems));
+}
+
+function updateStats() {
+  const all = allProblems();
+  const s = all.filter(p => solved[p.id]).length;
+  document.getElementById('st-total').textContent = all.length;
+  document.getElementById('st-solved').textContent = s;
+  document.getElementById('st-rem').textContent = all.length - s;
+  document.getElementById('st-pct').textContent = Math.round(s / all.length * 100) + '%';
+}
+
+function resetAll() {
+  if (!confirm('Reset all progress?')) return;
+  solved = {};
+  try { localStorage.removeItem('dsa_solved'); } catch(e) {}
+  document.querySelectorAll('.chk').forEach(c => c.checked = false);
+  updateStats();
+}
+
+let collapsed = {};
+
+function render() {
+  const q = document.getElementById('search').value.toLowerCase();
+  const fd = document.getElementById('fDiff').value;
+  const fs = document.getElementById('fStatus').value;
+  const board = document.getElementById('board');
+  board.innerHTML = '';
+
+  DATA.forEach(ds => {
+    const filtered = ds.patterns.map(pat => ({
+      ...pat,
+      problems: pat.problems.filter(p => {
+        if (q && !p.name.toLowerCase().includes(q) && !pat.name.toLowerCase().includes(q)) return false;
+        if (fd && p.diff !== fd) return false;
+        if (fs === 'done' && !solved[p.id]) return false;
+        if (fs === 'todo' && solved[p.id]) return false;
+        return true;
+      })
+    })).filter(pat => pat.problems.length > 0);
+
+    if (filtered.length === 0) return;
+
+    const totalHere = filtered.reduce((a, p) => a + p.problems.length, 0);
+    const solvedHere = filtered.reduce((a, p) => a + p.problems.filter(x => solved[x.id]).length, 0);
+    const pct = totalHere ? Math.round(solvedHere / totalHere * 100) : 0;
+    const isOpen = !collapsed[ds.ds];
+
+    const sec = document.createElement('div');
+    sec.className = 'ds-section';
+
+    sec.innerHTML = `
+      <div class="ds-header" onclick="toggleSection('${ds.ds}')">
+        <div class="ds-icon ${ds.color}" style="font-size:14px"><i class="ti ${ds.icon}" aria-hidden="true"></i></div>
+        <span class="ds-title">${ds.ds}</span>
+        <div class="ds-meta">
+          <span class="ds-progress">${solvedHere}/${totalHere}</span>
+          <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:#1D9E75"></div></div>
+          <i class="ti ti-chevron-down chevron ${isOpen?'open':''}" aria-hidden="true"></i>
+        </div>
+      </div>
+      ${isOpen ? buildBody(filtered) : ''}
+    `;
+    board.appendChild(sec);
+  });
+
+  updateStats();
+}
+
+function buildBody(patterns) {
+  let html = '<div class="pb-wrap">';
+  patterns.forEach(pat => {
+    html += `<div class="pattern-group">
+      <div class="pattern-label">${pat.name}</div>
+      <div class="col-head">
+        <span></span><span>Problem</span><span>Tag</span><span>Difficulty</span><span>LeetCode</span>
+      </div>`;
+    pat.problems.forEach(p => {
+      html += `<div class="problem-row">
+        <input type="checkbox" class="chk" ${solved[p.id]?'checked':''} onchange="save('${p.id}',this.checked)" aria-label="${p.name}">
+        <span class="p-name" style="${solved[p.id]?'text-decoration:line-through;color:var(--color-text-tertiary)':''}">${p.name}</span>
+        <span class="tag">${p.tag}</span>
+        <span class="diff-badge ${p.diff.toLowerCase()}">${p.diff}</span>
+        <a class="lc-link" onclick="openLink('https://leetcode.com/problems/${lcSlug(p.name)}/')" aria-label="Open ${p.name} on LeetCode">LC ${p.lc} <i class="ti ti-external-link" style="font-size:10px" aria-hidden="true"></i></a>
+      </div>`;
+    });
+    html += '</div>';
+  });
+  return html + '</div>';
+}
+
+function lcSlug(name) {
+  return name.toLowerCase().replace(/[^a-z0-9\s]/g,'').trim().replace(/\s+/g,'-');
+}
+
+function toggleSection(dsName) {
+  collapsed[dsName] = !collapsed[dsName];
+  render();
+}
+
+render();
+</script>
